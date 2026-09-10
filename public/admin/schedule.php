@@ -6,6 +6,7 @@ require_login();
 $db = get_db();
 $message = null;
 $weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+$categories = ['Kinder', 'Jugendliche', 'Erwachsene', 'Gemischt'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
     $action = (string) ($_POST['action'] ?? '');
@@ -20,20 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
             'course_name' => trim((string) $_POST['course_name']),
             'age_info'    => trim((string) $_POST['age_info']),
             'trainer'     => trim((string) $_POST['trainer']),
+            'category'    => (string) $_POST['category'],
             'sort_order'  => (int) $_POST['sort_order'],
         ];
-        if (!in_array($data['weekday'], $weekdays, true) || $data['course_name'] === '' || $data['time'] === '') {
-            $message = 'Bitte Wochentag, Uhrzeit und Kursname angeben.';
+        if (!in_array($data['weekday'], $weekdays, true) || $data['course_name'] === '' || $data['time'] === '' || !in_array($data['category'], $categories, true)) {
+            $message = 'Bitte Wochentag, Uhrzeit, Kategorie und Kursname angeben.';
         } elseif ($action === 'create') {
             $stmt = $db->prepare(
-                'INSERT INTO schedule (weekday, time, course_name, age_info, trainer, sort_order) VALUES (:weekday, :time, :course_name, :age_info, :trainer, :sort_order)'
+                'INSERT INTO schedule (weekday, time, course_name, age_info, trainer, category, sort_order) VALUES (:weekday, :time, :course_name, :age_info, :trainer, :category, :sort_order)'
             );
             $stmt->execute($data);
             $message = 'Eintrag angelegt.';
         } else {
             $data['id'] = (int) $_POST['id'];
             $stmt = $db->prepare(
-                'UPDATE schedule SET weekday=:weekday, time=:time, course_name=:course_name, age_info=:age_info, trainer=:trainer, sort_order=:sort_order WHERE id=:id'
+                'UPDATE schedule SET weekday=:weekday, time=:time, course_name=:course_name, age_info=:age_info, trainer=:trainer, category=:category, sort_order=:sort_order WHERE id=:id'
             );
             $stmt->execute($data);
             $message = 'Eintrag aktualisiert.';
@@ -80,6 +82,13 @@ include __DIR__ . '/includes/layout_top.php';
   <label>Trainer
     <input type="text" name="trainer" value="<?= e($editing['trainer'] ?? '') ?>">
   </label>
+  <label>Kategorie (Farbe im Stundenplan)
+    <select name="category" required>
+      <?php foreach ($categories as $cat): ?>
+        <option value="<?= e($cat) ?>" <?= ($editing['category'] ?? 'Jugendliche') === $cat ? 'selected' : '' ?>><?= e($cat) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </label>
   <label>Reihenfolge (Zahl, kleiner = weiter oben)
     <input type="number" name="sort_order" value="<?= (int) ($editing['sort_order'] ?? 0) ?>">
   </label>
@@ -90,7 +99,7 @@ include __DIR__ . '/includes/layout_top.php';
 <?php foreach ($grouped as $weekday => $items): ?>
   <h2><?= e($weekday) ?></h2>
   <table class="admin-table">
-    <thead><tr><th>Zeit</th><th>Kurs</th><th>Alter</th><th>Trainer</th><th></th></tr></thead>
+    <thead><tr><th>Zeit</th><th>Kurs</th><th>Alter</th><th>Trainer</th><th>Kategorie</th><th></th></tr></thead>
     <tbody>
     <?php foreach ($items as $item): ?>
       <tr>
@@ -98,6 +107,7 @@ include __DIR__ . '/includes/layout_top.php';
         <td><?= e($item['course_name']) ?></td>
         <td><?= e($item['age_info']) ?></td>
         <td><?= e($item['trainer']) ?></td>
+        <td><?= e($item['category']) ?></td>
         <td class="admin-table__actions">
           <a href="?edit=<?= (int) $item['id'] ?>">Bearbeiten</a>
           <form method="post" onsubmit="return confirm('Eintrag wirklich löschen?');">
@@ -109,7 +119,7 @@ include __DIR__ . '/includes/layout_top.php';
         </td>
       </tr>
     <?php endforeach; ?>
-    <?php if (!$items): ?><tr><td colspan="5">Keine Termine an diesem Tag.</td></tr><?php endif; ?>
+    <?php if (!$items): ?><tr><td colspan="6">Keine Termine an diesem Tag.</td></tr><?php endif; ?>
     </tbody>
   </table>
 <?php endforeach; ?>

@@ -38,12 +38,12 @@ $token = csrf_token();
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ersteinrichtung · LNDSBERG MOVES</title>
+<title>Ersteinrichtung · LNDSBRG MOVES</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body class="login-body">
 <form class="login-box" method="post" novalidate>
-  <h1>LNDSBERG MOVES</h1>
+  <h1>LNDSBRG MOVES</h1>
   <p class="login-box__subtitle">Ersten Admin-Account anlegen</p>
   <?php if ($error): ?><p class="form-error"><?= e($error) ?></p><?php endif; ?>
   <label>Benutzername

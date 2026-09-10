@@ -63,18 +63,17 @@ function get_trainers(): array {
     return get_db()->query('SELECT * FROM trainers ORDER BY sort_order, name')->fetchAll();
 }
 
-function count_courses_per_week(): int {
-    return (int) get_db()->query('SELECT COUNT(*) AS c FROM schedule')->fetch()['c'];
+/** @return array<int,array<string,string>> Kurse mit NimbusCloud-Anbindung, für das Buchungs-Modal */
+function get_bookable_courses(): array {
+    $rows = get_db()->query(
+        "SELECT slug, name, nimbus_online_id FROM courses WHERE slug != '' AND nimbus_online_id != ''"
+    )->fetchAll();
+    return $rows;
 }
 
-function count_trainers(): int {
-    return (int) get_db()->query('SELECT COUNT(*) AS c FROM trainers')->fetch()['c'];
-}
-
-function years_since_founded(): int {
-    $founded = (int) get_content('stat_founded_year', (string) date('Y'));
-    $diff = ((int) date('Y')) - $founded;
-    return max($diff, 0);
+function category_slug(string $category): string {
+    $map = ['Kinder' => 'kinder', 'Jugendliche' => 'jugendliche', 'Erwachsene' => 'erwachsene', 'Gemischt' => 'gemischt'];
+    return $map[$category] ?? 'jugendliche';
 }
 
 function csrf_token(): string {
