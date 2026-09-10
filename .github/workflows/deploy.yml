@@ -10,7 +10,22 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Gesamtes Projekt hochladen (config.php, includes/, sql/, public/)
+      - name: Web-Root hochladen (Inhalt von public/ direkt in den Domain-Ordner)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./public/
+          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}
+          state-name: .ftp-deploy-sync-state-public.json
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/assets/img/uploads/**
+
+      - name: App-Dateien hochladen (config.php, includes/, sql/, .htaccess)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -18,10 +33,11 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: ${{ secrets.FTP_APP_DIR }}
+          state-name: .ftp-deploy-sync-state-app.json
           dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
             **/.github/**
             **/config.local.php
-            **/public/assets/img/uploads/**
+            **/public/**
