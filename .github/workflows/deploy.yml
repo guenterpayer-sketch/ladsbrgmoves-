@@ -18,22 +18,10 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: ${{ secrets.FTP_APP_DIR }}
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
             **/.github/**
             **/config.local.php
             **/public/assets/img/uploads/**
-
-      - name: Web-Root separat hochladen (falls FTP-Konto nur den Webroot sieht)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public/
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/assets/img/uploads/**
