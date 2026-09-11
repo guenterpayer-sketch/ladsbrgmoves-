@@ -1,4 +1,4 @@
 config.php
-public/assets/img/uploads/*
-!public/assets/img/uploads/.gitkeep
-!public/assets/img/uploads/trainers/.gitkeep
+assets/img/uploads/*
+!assets/img/uploads/.gitkeep
+!assets/img/uploads/trainers/.gitkeep

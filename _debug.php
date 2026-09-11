@@ -5,7 +5,7 @@ header('Content-Type: text/plain; charset=utf-8');
 echo "1) PHP läuft. Version: " . PHP_VERSION . "\n";
 echo "2) Aktueller Ordner: " . __DIR__ . "\n";
 
-$configPath = __DIR__ . '/../config.php';
+$configPath = __DIR__ . '/config.php';
 echo "3) Suche config.php unter: $configPath\n";
 echo "   Existiert: " . (is_file($configPath) ? 'ja' : 'NEIN') . "\n";
 

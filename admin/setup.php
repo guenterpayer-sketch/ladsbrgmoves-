@@ -3,7 +3,7 @@ declare(strict_types=1);
 // Einmalige Ersteinrichtung: legt den ersten Admin-Account an.
 // Funktioniert nur, solange die Tabelle admin_users leer ist – danach bitte
 // diese Datei vom Server löschen oder zumindest umbenennen.
-require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();

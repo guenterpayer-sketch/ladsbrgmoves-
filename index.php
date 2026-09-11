@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/includes/functions.php';
 
 $courses = get_courses_grouped();
 $schedule = get_schedule_grouped();

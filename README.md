@@ -10,17 +10,21 @@ dokumentierten Corporate Design; Markenname gemäß dortiger Korrektur
 
 ## Struktur
 
+Alles liegt bewusst **flach in einem Ordner** – auf diesem Hosting hat der
+FTP-Account nur Zugriff auf genau den Ordner, auf den die Domain zeigt,
+keine Ebene darüber. Eine getrennte `public/`-Struktur würde dort nicht
+funktionieren.
+
 ```
 config.php                  Echte DB-Zugangsdaten (nicht im Git, nicht deployed – siehe unten)
 config.example.php          Vorlage für config.php
 sql/schema.sql               Datenbankschema + Beispiel-/Startdaten
-includes/                    PHP-Hilfsfunktionen (DB-Zugriff, Content-Helper)
-public/                      Web-Root – dieser Ordner kommt auf den Server
-  index.php                  Die öffentliche One-Pager-Seite
-  impressum.php               Impressum
-  datenschutz.php             Datenschutzerklärung
-  admin/                     Redaktionssystem (login-geschützt)
-  assets/                    CSS, Bilder
+includes/                    PHP-Hilfsfunktionen (DB-Zugriff, Content-Helper), per .htaccess gesperrt
+index.php                    Die öffentliche One-Pager-Seite
+impressum.php                Impressum
+datenschutz.php              Datenschutzerklärung
+admin/                       Redaktionssystem (login-geschützt)
+assets/                      CSS, Bilder
 ```
 
 `config.php` enthält die echten Datenbank-Zugangsdaten als einfache
@@ -29,9 +33,8 @@ public/                      Web-Root – dieser Ordner kommt auf den Server
 auch **nicht** über den Deploy-Workflow hochgeladen – sie muss einmalig
 direkt auf dem Server angelegt werden (siehe Deployment-Abschnitt).
 
-Auf dem Server liegen `config.php` und `includes/` zwar im selben Ordner wie
-`public/` (siehe Deployment-Hinweis unten), sind aber über eine `.htaccess`
-vor direktem Browser-Zugriff gesperrt.
+`config.php` und `includes/` liegen im selben Ordner wie `index.php`,
+sind aber über `.htaccess`-Regeln vor direktem Browser-Zugriff gesperrt.
 
 ## Lokal testen
 
@@ -42,7 +45,7 @@ mysql -u root -e "CREATE DATABASE lndsbrgmoves CHARACTER SET utf8mb4 COLLATE utf
 mysql --default-character-set=utf8mb4 -u root lndsbrgmoves < sql/schema.sql
 cp config.example.php config.php
 # config.php mit den lokalen DB-Zugangsdaten anpassen
-php -S 127.0.0.1:8000 -t public
+php -S 127.0.0.1:8000
 ```
 
 Wichtig beim Import: immer `--default-character-set=utf8mb4` angeben,
@@ -78,21 +81,22 @@ hiphoplandsberg.de übernommen (Stand 2026-09-10) – dort als unsichtbarer
    `sql/schema.sql` importieren. Beim Import in phpMyAdmin unter "Format"
    sicherstellen, dass die Zeichenkodierung `utf8mb4`/`utf8` ist.
 3. **Dateien hochladen**: Der GitHub-Actions-Workflow (`.github/workflows/deploy.yml`,
-   manuell auslösbar unter "Actions") lädt `public/` in den Web-Root und
-   `config.example.php`, `includes/`, `sql/`, `.htaccess` daneben in denselben
-   bzw. einen separaten Ordner hoch (abhängig von den Secrets `FTP_PUBLIC_DIR`
-   / `FTP_APP_DIR`) – `config.php` selbst lädt er **nicht** hoch.
-4. **Zugangsdaten hinterlegen**: `config.example.php` (liegt jetzt auf dem
-   Server) einmalig manuell per WebFTP/FTP zu `config.php` kopieren bzw.
-   umbenennen und mit den echten Zugangsdaten aus Schritt 1 befüllen (die
-   `define()`-Zeilen für `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`).
-   Diese Datei danach nicht mehr über den Workflow anfassen lassen – sie
-   bleibt bewusst serverseitig und wird bei jedem Deploy übersprungen.
+   manuell auslösbar unter "Actions" → "Deploy zu All-Inkl (FTP)" → "Run
+   workflow") lädt das komplette Projekt in den Ordner, auf den das Secret
+   `FTP_PUBLIC_DIR` zeigt (bei diesem Hosting der Ordner, auf den die Domain
+   direkt zeigt) – `config.php` selbst lädt er **nicht** hoch.
+4. **Zugangsdaten hinterlegen**: `config.example.php` (liegt nach dem
+   Deploy auf dem Server) einmalig manuell per WebFTP/FTP zu `config.php`
+   kopieren bzw. umbenennen und mit den echten Zugangsdaten aus Schritt 1
+   befüllen (die `define()`-Zeilen für `DB_HOST`, `DB_NAME`, `DB_USER`,
+   `DB_PASSWORD`). Diese Datei danach nicht mehr über den Workflow anfassen
+   lassen – sie bleibt bewusst serverseitig und wird bei jedem Deploy
+   übersprungen.
 5. **Admin-Account anlegen**: `https://eure-domain.de/admin/setup.php`
    einmalig aufrufen und Benutzername/Passwort vergeben.
-6. **Setup-Datei entfernen**: Danach `public/admin/setup.php` vom Server
-   löschen (sie verweigert nach dem ersten Account ohnehin den Dienst,
-   aber sauberer ist, sie ganz zu entfernen).
+6. **Setup-Datei entfernen**: Danach `admin/setup.php` vom Server löschen
+   (sie verweigert nach dem ersten Account ohnehin den Dienst, aber sauberer
+   ist, sie ganz zu entfernen).
 
 ## Was verifiziert bzw. übernommen wurde
 
