@@ -1,6 +1,6 @@
 # Wird mit ins Web-Root deployt (siehe .github/workflows/deploy.yml), da
 # FTP_APP_DIR und FTP_PUBLIC_DIR auf diesem Hosting derselbe Ordner sind.
-# Verhindert direkten Browser-Zugriff auf die Config-Dateien.
-<FilesMatch "^config(\.local)?\.php$">
+# Verhindert direkten Browser-Zugriff auf die Config-Datei.
+<FilesMatch "^config\.php$">
     Require all denied
 </FilesMatch>

@@ -11,8 +11,8 @@ dokumentierten Corporate Design; Markenname gemäß dortiger Korrektur
 ## Struktur
 
 ```
-config.php                  Lädt DB-Zugangsdaten (Env-Variablen oder config.local.php)
-config.local.php.example    Vorlage für lokale/Live-Zugangsdaten
+config.php                  Echte DB-Zugangsdaten (nicht im Git, nicht deployed – siehe unten)
+config.example.php          Vorlage für config.php
 sql/schema.sql               Datenbankschema + Beispiel-/Startdaten
 includes/                    PHP-Hilfsfunktionen (DB-Zugriff, Content-Helper)
 public/                      Web-Root – dieser Ordner kommt auf den Server
@@ -23,9 +23,15 @@ public/                      Web-Root – dieser Ordner kommt auf den Server
   assets/                    CSS, Bilder
 ```
 
-Nur der Inhalt von `public/` gehört ins öffentliche Web-Verzeichnis.
-`config.php`, `config.local.php` und `includes/` liegen eine Ebene darüber
-und sind damit vom Browser aus nicht erreichbar.
+`config.php` enthält die echten Datenbank-Zugangsdaten als einfache
+`define()`-Konstanten (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`,
+`DB_CHARSET`). Die Datei ist bewusst **nicht** im Git-Repository und wird
+auch **nicht** über den Deploy-Workflow hochgeladen – sie muss einmalig
+direkt auf dem Server angelegt werden (siehe Deployment-Abschnitt).
+
+Auf dem Server liegen `config.php` und `includes/` zwar im selben Ordner wie
+`public/` (siehe Deployment-Hinweis unten), sind aber über eine `.htaccess`
+vor direktem Browser-Zugriff gesperrt.
 
 ## Lokal testen
 
@@ -34,8 +40,8 @@ Voraussetzungen: PHP 8.1+ mit `pdo_mysql`, ein MySQL/MariaDB-Server.
 ```bash
 mysql -u root -e "CREATE DATABASE lndsbrgmoves CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql --default-character-set=utf8mb4 -u root lndsbrgmoves < sql/schema.sql
-cp config.local.php.example config.local.php
-# config.local.php mit den lokalen DB-Zugangsdaten anpassen
+cp config.example.php config.php
+# config.php mit den lokalen DB-Zugangsdaten anpassen
 php -S 127.0.0.1:8000 -t public
 ```
 
@@ -71,18 +77,17 @@ hiphoplandsberg.de übernommen (Stand 2026-09-10) – dort als unsichtbarer
 2. **Schema importieren**: Über phpMyAdmin (im KAS verlinkt) die Datei
    `sql/schema.sql` importieren. Beim Import in phpMyAdmin unter "Format"
    sicherstellen, dass die Zeichenkodierung `utf8mb4`/`utf8` ist.
-3. **Zugangsdaten hinterlegen**: `config.local.php.example` nach
-   `config.local.php` kopieren und mit den echten Zugangsdaten aus Schritt 1
-   befüllen. All-Inkl bietet auf klassischem Shared-Hosting in der Regel
-   keine Möglichkeit, eigene Umgebungsvariablen für PHP zu setzen – deshalb
-   ist `config.local.php` hier der zuverlässigere Weg. (Nicht verifiziert:
-   ob euer konkretes Paket das doch unterstützt – im Zweifel im KAS unter
-   PHP-Einstellungen prüfen.)
-4. **Dateien hochladen**: Per FTP/SFTP den kompletten Projektordner
-   hochladen – `config.php`, `config.local.php`, `includes/` und `sql/`
-   liegen dabei **außerhalb** des öffentlichen `htdocs`-Ordners, nur der
-   Inhalt von `public/` kommt in `htdocs` (bzw. in ein Unterverzeichnis
-   davon, falls die Domain auf einen Unterordner zeigt).
+3. **Dateien hochladen**: Der GitHub-Actions-Workflow (`.github/workflows/deploy.yml`,
+   manuell auslösbar unter "Actions") lädt `public/` in den Web-Root und
+   `config.example.php`, `includes/`, `sql/`, `.htaccess` daneben in denselben
+   bzw. einen separaten Ordner hoch (abhängig von den Secrets `FTP_PUBLIC_DIR`
+   / `FTP_APP_DIR`) – `config.php` selbst lädt er **nicht** hoch.
+4. **Zugangsdaten hinterlegen**: `config.example.php` (liegt jetzt auf dem
+   Server) einmalig manuell per WebFTP/FTP zu `config.php` kopieren bzw.
+   umbenennen und mit den echten Zugangsdaten aus Schritt 1 befüllen (die
+   `define()`-Zeilen für `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`).
+   Diese Datei danach nicht mehr über den Workflow anfassen lassen – sie
+   bleibt bewusst serverseitig und wird bei jedem Deploy übersprungen.
 5. **Admin-Account anlegen**: `https://eure-domain.de/admin/setup.php`
    einmalig aufrufen und Benutzername/Passwort vergeben.
 6. **Setup-Datei entfernen**: Danach `public/admin/setup.php` vom Server

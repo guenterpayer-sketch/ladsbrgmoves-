@@ -1,4 +1,4 @@
-config.local.php
+config.php
 public/assets/img/uploads/*
 !public/assets/img/uploads/.gitkeep
 !public/assets/img/uploads/trainers/.gitkeep

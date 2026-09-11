@@ -39,5 +39,4 @@ jobs:
             **/.git*
             **/.git*/**
             **/.github/**
-            **/config.local.php
             **/public/**
