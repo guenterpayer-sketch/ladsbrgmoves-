@@ -53,10 +53,17 @@ function get_courses_grouped(): array {
  */
 function get_schedule_grouped(): array {
     $order = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    // Unterabfrage statt JOIN: liefert pro Stundenplan-Eintrag höchstens einen
+    // Kurs-Slug, auch wenn derselbe Kursname mehrfach in "courses" vorkommt
+    // (z.B. derselbe Kurs einmal für Jugendliche, einmal für Erwachsene
+    // angelegt) – ein JOIN würde den Stundenplan-Eintrag sonst pro Treffer
+    // vervielfachen.
     $rows = get_db()->query(
-        'SELECT s.*, c.slug AS course_slug
+        'SELECT s.*,
+                (SELECT c.slug FROM courses c
+                 WHERE c.name = s.course_name AND c.slug IS NOT NULL AND c.nimbus_online_id != \'\'
+                 ORDER BY c.id LIMIT 1) AS course_slug
          FROM schedule s
-         LEFT JOIN courses c ON c.name = s.course_name AND c.slug IS NOT NULL AND c.nimbus_online_id != \'\'
          ORDER BY FIELD(s.weekday,"Mo","Di","Mi","Do","Fr","Sa","So"), s.sort_order, s.time'
     )->fetchAll();
     $grouped = array_fill_keys($order, []);
