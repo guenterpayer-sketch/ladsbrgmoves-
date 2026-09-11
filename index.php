@@ -30,8 +30,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
 <header class="site-header">
   <nav class="site-nav">
     <a href="#top" class="logo">
-      <svg class="logo__star" width="18" height="18" viewBox="0 0 100 100"><path d="M50 6 L61 39 L96 39 L68 60 L79 93 L50 72 L21 93 L32 60 L4 39 L39 39 Z" fill="none" stroke="url(#navstar)" stroke-width="6"/><defs><linearGradient id="navstar" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e0559c"/><stop offset="1" stop-color="#7c5cd6"/></linearGradient></defs></svg>
-      <span class="logo__word"><?= e($brandName) ?></span>
+      <img class="logo__img" src="assets/img/logo-icon.png" alt="<?= e($brandName) ?>">
     </a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
@@ -81,8 +80,8 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
       <a href="#kurse" class="button-primary"><?= e(get_content('hero_cta_primary', 'Schnupperstunde sichern')) ?></a>
       <br>
       <a href="#kurse" class="button-secondary">
-        <?= e(get_content('hero_cta_secondary', 'Kurse entdecken')) ?>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+        <?= e(get_content('hero_cta_secondary', 'Kurse entdecken')) ?>
       </a>
     </div>
   </section>

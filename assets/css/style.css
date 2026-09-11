@@ -70,9 +70,8 @@ button { font-family: inherit; }
   justify-content: space-between;
 }
 
-.logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.logo__star { flex-shrink: 0; }
-.logo__word { font-weight: 700; font-size: 13px; letter-spacing: 0.5px; color: var(--text); }
+.logo { display: flex; align-items: center; text-decoration: none; }
+.logo__img { height: 40px; width: auto; display: block; border-radius: 6px; }
 
 .nav-toggle {
   width: 36px;
@@ -288,34 +287,21 @@ main {
 }
 
 .button-primary {
-  position: relative;
   display: inline-flex;
   align-items: center;
   background: var(--gradient);
   color: var(--bg);
   font-weight: 700;
   font-size: 14px;
-  padding: 15px 26px 15px 22px;
+  padding: 15px 26px;
   border-radius: 8px;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  overflow: hidden;
 }
-
-.button-primary::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 5px;
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.button-primary { padding-left: 26px; }
 
 .button-secondary {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -324,6 +310,18 @@ main {
   font-weight: 600;
   text-decoration: none;
   margin-top: 16px;
+  padding-left: 14px;
+}
+
+.button-secondary::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1px;
+  bottom: 1px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--gradient);
 }
 
 /* ---------- Section titles ---------- */
@@ -470,8 +468,6 @@ main {
   background: var(--bg);
   color: var(--text);
 }
-
-.panel--closing .button-primary::before { background: rgba(255, 255, 255, 0.25); }
 
 /* ---------- Footer (in Closing-Slide gefaltet) ---------- */
 
