@@ -15,10 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
         $stmt->execute(['id' => (int) $_POST['id']]);
         $message = 'Eintrag gelöscht.';
     } elseif ($action === 'create' || $action === 'update') {
+        $courseId = trim((string) ($_POST['course_id'] ?? ''));
         $data = [
             'weekday'     => (string) $_POST['weekday'],
             'time'        => trim((string) $_POST['time']),
             'course_name' => trim((string) $_POST['course_name']),
+            'course_id'   => $courseId !== '' ? (int) $courseId : null,
             'age_info'    => trim((string) $_POST['age_info']),
             'trainer'     => trim((string) $_POST['trainer']),
             'category'    => (string) $_POST['category'],
@@ -28,20 +30,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
             $message = 'Bitte Wochentag, Uhrzeit, Kategorie und Kursname angeben.';
         } elseif ($action === 'create') {
             $stmt = $db->prepare(
-                'INSERT INTO schedule (weekday, time, course_name, age_info, trainer, category, sort_order) VALUES (:weekday, :time, :course_name, :age_info, :trainer, :category, :sort_order)'
+                'INSERT INTO schedule (weekday, time, course_name, course_id, age_info, trainer, category, sort_order) VALUES (:weekday, :time, :course_name, :course_id, :age_info, :trainer, :category, :sort_order)'
             );
             $stmt->execute($data);
             $message = 'Eintrag angelegt.';
         } else {
             $data['id'] = (int) $_POST['id'];
             $stmt = $db->prepare(
-                'UPDATE schedule SET weekday=:weekday, time=:time, course_name=:course_name, age_info=:age_info, trainer=:trainer, category=:category, sort_order=:sort_order WHERE id=:id'
+                'UPDATE schedule SET weekday=:weekday, time=:time, course_name=:course_name, course_id=:course_id, age_info=:age_info, trainer=:trainer, category=:category, sort_order=:sort_order WHERE id=:id'
             );
             $stmt->execute($data);
             $message = 'Eintrag aktualisiert.';
         }
     }
 }
+
+// Für das Auswahlfeld: alle Kurse mit Anzeige-Label, das Kategorie + Alter
+// unterscheidbar macht (wichtig, wenn derselbe Kursname mehrfach vorkommt,
+// z.B. eine Alterstrennung wie bei Breakdance).
+$allCourses = $db->query('SELECT id, category, name, age_info, slug, nimbus_online_id FROM courses ORDER BY category, name, id')->fetchAll();
 
 $editId = isset($_GET['edit']) ? (int) $_GET['edit'] : null;
 $editing = null;
@@ -73,8 +80,22 @@ include __DIR__ . '/includes/layout_top.php';
   <label>Uhrzeit
     <input type="text" name="time" required placeholder="17:30 Uhr" value="<?= e($editing['time'] ?? '') ?>">
   </label>
-  <label>Kursname
+  <label>Kursname (Anzeige im Stundenplan)
     <input type="text" name="course_name" required value="<?= e($editing['course_name'] ?? '') ?>">
+  </label>
+  <label>Verknüpfter Kurs (für den Buchungs-Button)
+    <select name="course_id">
+      <option value="">– kein Kurs verknüpft (freier Eintrag, kein Buchungslink) –</option>
+      <?php foreach ($allCourses as $course): ?>
+        <?php
+          $label = $course['name'];
+          if ($course['age_info']) { $label .= ' – ' . $course['age_info']; }
+          $label .= ' (' . $course['category'] . ')';
+          if ($course['slug'] === null || $course['nimbus_online_id'] === '') { $label .= ' [nicht buchbar]'; }
+        ?>
+        <option value="<?= (int) $course['id'] ?>" <?= (int) ($editing['course_id'] ?? 0) === (int) $course['id'] ? 'selected' : '' ?>><?= e($label) ?></option>
+      <?php endforeach; ?>
+    </select>
   </label>
   <label>Altersangabe
     <input type="text" name="age_info" value="<?= e($editing['age_info'] ?? '') ?>">
@@ -99,7 +120,7 @@ include __DIR__ . '/includes/layout_top.php';
 <?php foreach ($grouped as $weekday => $items): ?>
   <h2><?= e($weekday) ?></h2>
   <table class="admin-table">
-    <thead><tr><th>Zeit</th><th>Kurs</th><th>Alter</th><th>Trainer</th><th>Kategorie</th><th></th></tr></thead>
+    <thead><tr><th>Zeit</th><th>Kurs</th><th>Alter</th><th>Trainer</th><th>Kategorie</th><th>Buchbar</th><th></th></tr></thead>
     <tbody>
     <?php foreach ($items as $item): ?>
       <tr>
@@ -108,6 +129,7 @@ include __DIR__ . '/includes/layout_top.php';
         <td><?= e($item['age_info']) ?></td>
         <td><?= e($item['trainer']) ?></td>
         <td><?= e($item['category']) ?></td>
+        <td><?= $item['course_slug'] ? '✓' : '—' ?></td>
         <td class="admin-table__actions">
           <a href="?edit=<?= (int) $item['id'] ?>">Bearbeiten</a>
           <form method="post" onsubmit="return confirm('Eintrag wirklich löschen?');">
@@ -119,7 +141,7 @@ include __DIR__ . '/includes/layout_top.php';
         </td>
       </tr>
     <?php endforeach; ?>
-    <?php if (!$items): ?><tr><td colspan="6">Keine Termine an diesem Tag.</td></tr><?php endif; ?>
+    <?php if (!$items): ?><tr><td colspan="7">Keine Termine an diesem Tag.</td></tr><?php endif; ?>
     </tbody>
   </table>
 <?php endforeach; ?>

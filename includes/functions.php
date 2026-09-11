@@ -47,23 +47,18 @@ function get_courses_grouped(): array {
 
 /**
  * @return array<string,array<int,array<string,mixed>>> Stundenplan gruppiert nach Wochentag.
- * Jeder Eintrag bekommt zusätzlich "course_slug", sofern sein course_name exakt
+ * Jeder Eintrag bekommt zusätzlich "course_slug", sofern er im Admin explizit mit
  * einem buchbaren Kurs (Kurse-Verwaltung, mit Anmelde-Schlüssel + NimbusCloud-ID)
- * entspricht – darüber wird die Kachel im Stundenplan klickbar/buchbar.
+ * verknüpft wurde (schedule.course_id) – darüber wird die Kachel im Stundenplan
+ * klickbar/buchbar. Die Verknüpfung ist bewusst optional: ein Stundenplan-Eintrag
+ * ohne course_id ist ein "freier" Eintrag ohne Buchungslink.
  */
 function get_schedule_grouped(): array {
     $order = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-    // Unterabfrage statt JOIN: liefert pro Stundenplan-Eintrag höchstens einen
-    // Kurs-Slug, auch wenn derselbe Kursname mehrfach in "courses" vorkommt
-    // (z.B. derselbe Kurs einmal für Jugendliche, einmal für Erwachsene
-    // angelegt) – ein JOIN würde den Stundenplan-Eintrag sonst pro Treffer
-    // vervielfachen.
     $rows = get_db()->query(
-        'SELECT s.*,
-                (SELECT c.slug FROM courses c
-                 WHERE c.name = s.course_name AND c.slug IS NOT NULL AND c.nimbus_online_id != \'\'
-                 ORDER BY c.id LIMIT 1) AS course_slug
+        'SELECT s.*, c.slug AS course_slug
          FROM schedule s
+         LEFT JOIN courses c ON c.id = s.course_id AND c.slug IS NOT NULL AND c.nimbus_online_id != \'\'
          ORDER BY FIELD(s.weekday,"Mo","Di","Mi","Do","Fr","Sa","So"), s.sort_order, s.time'
     )->fetchAll();
     $grouped = array_fill_keys($order, []);

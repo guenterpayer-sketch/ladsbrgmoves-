@@ -38,10 +38,17 @@ CREATE TABLE IF NOT EXISTS schedule (
   weekday ENUM('Mo','Di','Mi','Do','Fr','Sa','So') NOT NULL,
   time VARCHAR(20) NOT NULL,
   course_name VARCHAR(150) NOT NULL,
+  -- optionale Verknüpfung zu einem konkreten Kurs (für den Buchungslink).
+  -- NULL = freier Stundenplan-Eintrag ohne Buchung. Bewusst über eine ID statt
+  -- über course_name verknüpft, da derselbe Kursname mehrfach in "courses"
+  -- vorkommen kann (z.B. eine Alterstrennung wie bei Breakdance), aber jeweils
+  -- eine andere NimbusCloud-Buchung meint.
+  course_id INT NULL DEFAULT NULL,
   age_info VARCHAR(255) NOT NULL DEFAULT '',
   trainer VARCHAR(100) NOT NULL DEFAULT '',
   category ENUM('Kinder','Jugendliche','Erwachsene','Gemischt') NOT NULL DEFAULT 'Jugendliche',
-  sort_order INT NOT NULL DEFAULT 0
+  sort_order INT NOT NULL DEFAULT 0,
+  CONSTRAINT fk_schedule_course FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS trainers (
