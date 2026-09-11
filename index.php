@@ -8,13 +8,6 @@ $trainers = get_trainers();
 $bookable = get_bookable_courses();
 
 $brandName = get_content('brand_name', 'LNDSBRG MOVES');
-$firstLetter = mb_substr(preg_replace('/[^A-Za-z]/', '', $brandName) ?: 'L', 0, 1);
-
-$categoryIcons = [
-    'Kinder' => '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="3.2"/><path d="M5 21c0-4 3-6.5 7-6.5S19 17 19 21"/></svg>',
-    'Jugendliche' => '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2.3 5.8L20 9l-4.6 3.8L16.5 19 12 15.6 7.5 19l1.1-6.2L4 9l5.7-1.2z"/></svg>',
-    'Erwachsene' => '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>',
-];
 
 $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwachsene' => 'Erwachsene'];
 ?>
@@ -28,7 +21,7 @@ $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwach
 <link rel="icon" href="assets/img/logo-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -36,66 +29,56 @@ $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwach
 <header class="site-header">
   <nav class="site-nav">
     <a href="#top" class="logo">
-      <span class="logo__main"><?= e($brandName) ?></span>
-      <span class="logo__sub">
-        <span class="logo__line"></span>
-        <span class="logo__sub-text"><?= e(get_content('brand_subtitle', 'URBAN DANCE')) ?></span>
-        <span class="logo__line"></span>
-      </span>
+      <svg class="logo__star" width="18" height="18" viewBox="0 0 100 100"><path d="M50 6 L61 39 L96 39 L68 60 L79 93 L50 72 L21 93 L32 60 L4 39 L39 39 Z" fill="none" stroke="url(#navstar)" stroke-width="6"/><defs><linearGradient id="navstar" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e0559c"/><stop offset="1" stop-color="#7c5cd6"/></linearGradient></defs></svg>
+      <span class="logo__word"><?= e($brandName) ?></span>
     </a>
-    <button class="site-nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5h14M2 9h14M2 13h14"/></svg>
+    <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
     </button>
-    <div class="site-nav__links" id="nav-links">
-      <a href="#kurse">Kurse</a>
-      <a href="#plan">Stundenplan</a>
-      <a href="#trainer">Trainer</a>
-      <a href="#kurse" class="site-nav__cta"><?= e(get_content('hero_cta_primary', 'Schnupperstunde sichern')) ?></a>
-    </div>
   </nav>
+  <div class="nav-links" id="nav-links">
+    <a href="#kurse">Kurse</a>
+    <a href="#plan">Stundenplan</a>
+    <a href="#trainer">Trainer</a>
+    <a href="impressum.php">Impressum</a>
+    <a href="datenschutz.php">Datenschutz</a>
+  </div>
 </header>
 
 <main id="top">
-  <section class="hero">
-    <div class="hero__stripes" aria-hidden="true"></div>
-    <div class="hero__ghost" aria-hidden="true"><?= e($firstLetter) ?></div>
-    <div class="hero__content">
-      <div class="hero__inner">
-        <p class="badge"><?= e(get_content('hero_kicker')) ?></p>
-        <h1 class="hero__title">
-          <?= e(get_content('hero_title_line1')) ?><br>
-          <span><?= e(get_content('hero_title_line2')) ?></span>
-        </h1>
-        <p class="hero__text"><?= e(get_content('hero_text')) ?></p>
-        <div class="btns">
-          <a href="#kurse" class="button-primary"><?= e(get_content('hero_cta_primary', 'Schnupperstunde sichern')) ?></a>
-          <a href="#kurse" class="button-secondary">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#e03636" stroke-width="1"/><path d="M6.5 5.5l4 2.5-4 2.5V5.5z" fill="#e03636"/></svg>
-            <?= e(get_content('hero_cta_secondary', 'Kurse entdecken')) ?>
-          </a>
-        </div>
-        <div class="hero__stats">
-          <div class="stat">
-            <span class="stat__value" data-countup data-end="<?= (int) get_content('stat_courses_value', '0') ?>" data-suffix="<?= e(get_content('stat_courses_suffix')) ?>">0</span>
-            <span class="stat__label"><?= e(get_content('stat_courses_label')) ?></span>
-          </div>
-          <div class="stat">
-            <span class="stat__value" data-countup data-end="<?= (int) get_content('stat_years_value', '0') ?>" data-suffix="<?= e(get_content('stat_years_suffix')) ?>">0</span>
-            <span class="stat__label"><?= e(get_content('stat_years_label')) ?></span>
-          </div>
-          <div class="stat">
-            <span class="stat__value" data-countup data-end="<?= (int) get_content('stat_trainers_value', '0') ?>" data-suffix="<?= e(get_content('stat_trainers_suffix')) ?>">0</span>
-            <span class="stat__label"><?= e(get_content('stat_trainers_label')) ?></span>
-          </div>
-        </div>
-      </div>
+
+  <!-- Panel 1: Intro -->
+  <section class="panel panel--intro">
+    <div class="glow" aria-hidden="true"></div>
+    <p class="badge"><?= e(get_content('hero_kicker')) ?></p>
+    <h1>
+      <span><?= e(get_content('hero_title_line1')) ?></span><br>
+      <span class="grad-text"><?= e(get_content('hero_title_line2')) ?></span>
+    </h1>
+    <div class="scroll-hint">
+      <span>Scroll für mehr</span>
+      <svg width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="12" height="18" rx="6"/><circle cx="7" cy="6" r="1.4" fill="currentColor" stroke="none"/></svg>
     </div>
   </section>
 
-  <section id="kurse" class="section">
-    <div class="section__inner">
-      <h2 class="section__title">UNSERE <span>KURSE</span></h2>
-      <p class="section__intro">Klick auf einen buchbaren Kurs, um freie Termine für die kostenlose Schnupperstunde zu sehen.</p>
+  <!-- Panel 2: Pitch + CTA -->
+  <section class="panel panel--pitch">
+    <div class="panel__inner">
+      <p><?= e(get_content('hero_text')) ?></p>
+      <a href="#kurse" class="button-primary"><?= e(get_content('hero_cta_primary', 'Schnupperstunde sichern')) ?></a>
+      <br>
+      <a href="#kurse" class="button-secondary">
+        <?= e(get_content('hero_cta_secondary', 'Kurse entdecken')) ?>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Panel 3: Kurse -->
+  <section class="panel" id="kurse">
+    <div class="panel__inner">
+      <h2 class="panel__title">Unsere <span class="grad-text">Kurse</span></h2>
+      <p class="panel__intro-text">Klick auf einen buchbaren Kurs, um freie Termine für die kostenlose Schnupperstunde zu sehen.</p>
 
       <div class="tabs" role="tablist">
         <?php $first = true; foreach ($categoryLabels as $catKey => $catLabel): ?>
@@ -108,8 +91,7 @@ $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwach
           <div class="course-grid">
             <?php foreach ($courses[$catKey] as $course): ?>
               <?php $bookableCard = $course['slug'] !== '' && $course['nimbus_online_id'] !== ''; ?>
-              <?php $cardBody = '<div class="course-card__icon">' . $categoryIcons[$catKey] . '</div>'
-                  . '<div class="course-card__name">' . e($course['name']) . '</div>'
+              <?php $cardBody = '<div class="course-card__name">' . e($course['name']) . '</div>'
                   . '<div class="course-card__meta">' . ($course['age_info'] ? e($course['age_info']) . '<br>' : '') . e($course['time_info']) . '</div>'
                   . ($bookableCard ? '<span class="course-card__cta">Termine ansehen →</span>' : ''); ?>
               <?php if ($bookableCard): ?>
@@ -125,9 +107,10 @@ $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwach
     </div>
   </section>
 
-  <section id="plan" class="section">
-    <div class="section__inner">
-      <h2 class="section__title">STUNDEN<span>PLAN</span></h2>
+  <!-- Panel 4: Stundenplan -->
+  <section class="panel" id="plan">
+    <div class="panel__inner">
+      <h2 class="panel__title">Stunden<span class="grad-text">plan</span></h2>
       <div class="schedule-legend">
         <span class="schedule-legend__item"><span class="schedule-legend__dot" style="background:var(--cat-kinder)"></span>Kinder</span>
         <span class="schedule-legend__item"><span class="schedule-legend__dot" style="background:var(--cat-jugendliche)"></span>Jugendliche</span>
@@ -157,45 +140,41 @@ $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwach
     </div>
   </section>
 
-  <section id="trainer" class="section">
-    <div class="section__inner">
-      <h2 class="section__title">DEINE <span>TRAINER</span></h2>
-      <?php if (get_content('trainer_intro')): ?><p class="section__intro"><?= e(get_content('trainer_intro')) ?></p><?php endif; ?>
+  <!-- Panel 5: Trainer (ohne Fotos) -->
+  <section class="panel" id="trainer">
+    <div class="panel__inner">
+      <h2 class="panel__title">Deine <span class="grad-text">Trainer</span></h2>
+      <?php if (get_content('trainer_intro')): ?><p class="panel__intro-text"><?= e(get_content('trainer_intro')) ?></p><?php endif; ?>
       <div class="trainer-grid">
         <?php foreach ($trainers as $trainer): ?>
           <div class="trainer-card">
-            <?php if ($trainer['photo_path']): ?>
-              <img class="trainer-card__photo" src="<?= e($trainer['photo_path']) ?>" alt="<?= e($trainer['name']) ?>">
-            <?php else: ?>
-              <div class="trainer-card__placeholder"><?= e(mb_substr($trainer['name'], 0, 1)) ?></div>
-            <?php endif; ?>
-            <div>
-              <div class="trainer-card__name"><?= e($trainer['name']) ?></div>
-              <?php if ($trainer['bio']): ?><div class="trainer-card__bio"><?= e($trainer['bio']) ?></div><?php endif; ?>
-            </div>
+            <div class="trainer-card__avatar"><?= e(mb_substr($trainer['name'], 0, 1)) ?></div>
+            <div class="trainer-card__name"><?= e($trainer['name']) ?></div>
+            <?php if ($trainer['bio']): ?><div class="trainer-card__bio"><?= e($trainer['bio']) ?></div><?php endif; ?>
           </div>
         <?php endforeach; ?>
       </div>
     </div>
   </section>
 
-  <section class="section section--hint">
-    <div class="section__inner">
-      <h2 class="section__title">SO EINFACH GEHT'S</h2>
-      <p>Kurs auswählen, freien Termin für die kostenlose Schnupperstunde buchen, vorbeikommen. Keine Verpflichtung, keine Vorkenntnisse nötig.</p>
+  <!-- Panel 6: Closing CTA -->
+  <section class="panel panel--closing">
+    <div class="panel__inner">
+      <h2 class="panel__title">Bereit?</h2>
+      <p>Kostenlose Schnupperstunde, unverbindlich – such dir oben deinen Kurs aus.</p>
+      <a href="#kurse" class="button-primary">Zu den Kursen</a>
     </div>
   </section>
+
 </main>
 
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div>
-      <div><?= e(get_content('footer_offer_text')) ?></div>
-      <div class="site-footer__contact">
-        <?= e(get_content('contact_name')) ?> · <?= e(get_content('contact_address')) ?> ·
-        <a href="tel:<?= e(preg_replace('/\s+/', '', get_content('contact_phone'))) ?>"><?= e(get_content('contact_phone')) ?></a> ·
-        <a href="mailto:<?= e(get_content('contact_email')) ?>"><?= e(get_content('contact_email')) ?></a>
-      </div>
+      <?= e(get_content('footer_offer_text')) ?><br>
+      <?= e(get_content('contact_name')) ?> · <?= e(get_content('contact_address')) ?><br>
+      <a href="tel:<?= e(preg_replace('/\s+/', '', get_content('contact_phone'))) ?>"><?= e(get_content('contact_phone')) ?></a> ·
+      <a href="mailto:<?= e(get_content('contact_email')) ?>"><?= e(get_content('contact_email')) ?></a>
     </div>
     <div class="site-footer__links">
       <a href="impressum.php">Impressum</a>
@@ -265,32 +244,6 @@ document.querySelectorAll('.tab-btn').forEach(function (btn) {
     document.getElementById(btn.dataset.tabTarget).classList.add('is-active');
   });
 });
-
-// Stats: Count-up beim Sichtbarwerden
-var countEls = document.querySelectorAll('[data-countup]');
-var counted = false;
-function runCountUp() {
-  if (counted) return;
-  counted = true;
-  countEls.forEach(function (el) {
-    var end = parseInt(el.dataset.end, 10) || 0;
-    var suffix = el.dataset.suffix || '';
-    var duration = 1200;
-    var start = performance.now();
-    function tick(now) {
-      var progress = Math.min((now - start) / duration, 1);
-      el.textContent = Math.round(progress * end) + suffix;
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  });
-}
-if (countEls.length) {
-  var observer = new IntersectionObserver(function (entries) {
-    if (entries[0].isIntersecting) runCountUp();
-  }, { threshold: 0.4 });
-  observer.observe(countEls[0]);
-}
 </script>
 
 </body>
