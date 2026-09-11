@@ -25,3 +25,4 @@ jobs:
             **/.github/**
             **/config.php
             **/assets/img/uploads/**
+            **/admin/setup.php

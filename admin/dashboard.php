@@ -23,5 +23,9 @@ include __DIR__ . '/includes/layout_top.php';
     <h2>Trainer</h2>
     <p>Trainer-Profile inkl. Foto und Kurzbeschreibung pflegen.</p>
   </a>
+  <a class="admin-card" href="users.php">
+    <h2>Nutzer</h2>
+    <p>Weitere Redaktions-Accounts anlegen oder entfernen.</p>
+  </a>
 </div>
 <?php include __DIR__ . '/includes/layout_bottom.php'; ?>

@@ -45,11 +45,19 @@ function get_courses_grouped(): array {
     return $grouped;
 }
 
-/** @return array<string,array<int,array<string,mixed>>> Stundenplan gruppiert nach Wochentag */
+/**
+ * @return array<string,array<int,array<string,mixed>>> Stundenplan gruppiert nach Wochentag.
+ * Jeder Eintrag bekommt zusätzlich "course_slug", sofern sein course_name exakt
+ * einem buchbaren Kurs (Kurse-Verwaltung, mit Anmelde-Schlüssel + NimbusCloud-ID)
+ * entspricht – darüber wird die Kachel im Stundenplan klickbar/buchbar.
+ */
 function get_schedule_grouped(): array {
     $order = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
     $rows = get_db()->query(
-        'SELECT * FROM schedule ORDER BY FIELD(weekday,"Mo","Di","Mi","Do","Fr","Sa","So"), sort_order, time'
+        'SELECT s.*, c.slug AS course_slug
+         FROM schedule s
+         LEFT JOIN courses c ON c.name = s.course_name AND c.slug IS NOT NULL AND c.nimbus_online_id != \'\'
+         ORDER BY FIELD(s.weekday,"Mo","Di","Mi","Do","Fr","Sa","So"), s.sort_order, s.time'
     )->fetchAll();
     $grouped = array_fill_keys($order, []);
     foreach ($rows as $row) {

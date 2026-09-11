@@ -92,11 +92,16 @@ hiphoplandsberg.de übernommen (Stand 2026-09-10) – dort als unsichtbarer
    `DB_PASSWORD`). Diese Datei danach nicht mehr über den Workflow anfassen
    lassen – sie bleibt bewusst serverseitig und wird bei jedem Deploy
    übersprungen.
-5. **Admin-Account anlegen**: `https://eure-domain.de/admin/setup.php`
-   einmalig aufrufen und Benutzername/Passwort vergeben.
-6. **Setup-Datei entfernen**: Danach `admin/setup.php` vom Server löschen
-   (sie verweigert nach dem ersten Account ohnehin den Dienst, aber sauberer
-   ist, sie ganz zu entfernen).
+5. **Admin-Account anlegen**: `admin/setup.php` ist vom automatischen Deploy
+   bewusst ausgeschlossen (steht in `.github/workflows/deploy.yml` unter
+   `exclude`), damit sie nach dem Löschen nicht bei jedem Deploy erneut
+   auftaucht. Bei einer Neuinstallation deshalb einmalig manuell per
+   FTP/WebFTP hochladen, `https://eure-domain.de/admin/setup.php` aufrufen
+   und Benutzername/Passwort vergeben.
+6. **Setup-Datei entfernen**: Danach `admin/setup.php` wieder vom Server
+   löschen (sie verweigert nach dem ersten Account ohnehin den Dienst, aber
+   sauberer ist, sie ganz zu entfernen). Weitere Admin-Accounts lassen sich
+   danach bequem im Redaktionssystem unter "Nutzer" anlegen.
 
 ## Was verifiziert bzw. übernommen wurde
 

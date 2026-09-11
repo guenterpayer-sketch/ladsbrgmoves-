@@ -25,7 +25,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="stories-page">
 
 <header class="site-header">
   <nav class="site-nav">
@@ -67,9 +67,13 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
       <span><?= e(get_content('hero_title_line1')) ?></span><br>
       <span class="grad-text"><?= e(get_content('hero_title_line2')) ?></span>
     </h1>
-    <div class="scroll-hint">
+    <div class="scroll-hint scroll-hint--mobile">
       <span>Swipe für mehr</span>
       <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1 7h18M13 1l6 6-6 6"/></svg>
+    </div>
+    <div class="scroll-hint scroll-hint--desktop">
+      <span>Scroll für mehr</span>
+      <svg width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="12" height="18" rx="6"/><circle cx="7" cy="6" r="1.4" fill="currentColor" stroke="none"/></svg>
     </div>
   </section>
 
@@ -146,10 +150,17 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
             <?php if ($items): ?>
               <ul class="schedule-list">
                 <?php foreach ($items as $entry): ?>
-                  <li class="schedule-entry schedule-entry--<?= e(category_slug($entry['category'])) ?>">
-                    <span class="schedule-entry__time"><?= e($entry['time']) ?></span>
-                    <span class="schedule-entry__course"><?= e($entry['course_name']) ?></span>
-                    <?php if ($entry['trainer']): ?><span class="schedule-entry__meta">– <?= e($entry['trainer']) ?></span><?php endif; ?>
+                  <?php $entryBookable = !empty($entry['course_slug']); ?>
+                  <?php $entryBody = '<span class="schedule-entry__time">' . e($entry['time']) . '</span>'
+                      . '<span class="schedule-entry__course">' . e($entry['course_name']) . '</span>'
+                      . ($entry['trainer'] ? '<span class="schedule-entry__meta">– ' . e($entry['trainer']) . '</span>' : '')
+                      . ($entryBookable ? '<span class="schedule-entry__cta">Termine ansehen →</span>' : ''); ?>
+                  <li>
+                    <?php if ($entryBookable): ?>
+                      <button type="button" class="schedule-entry schedule-entry--bookable schedule-entry--<?= e(category_slug($entry['category'])) ?>" onclick="lmOpenModal('<?= e($entry['course_slug']) ?>')"><?= $entryBody ?></button>
+                    <?php else: ?>
+                      <div class="schedule-entry schedule-entry--<?= e(category_slug($entry['category'])) ?>"><?= $entryBody ?></div>
+                    <?php endif; ?>
                   </li>
                 <?php endforeach; ?>
               </ul>
@@ -168,12 +179,11 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
       <h2 class="panel__title">Deine <span class="grad-text">Trainer</span></h2>
       <?php if (get_content('trainer_intro')): ?><p class="panel__intro-text"><?= e(get_content('trainer_intro')) ?></p><?php endif; ?>
       <div class="trainer-grid">
-        <?php foreach ($trainers as $trainer): ?>
-          <div class="trainer-card">
+        <?php foreach ($trainers as $i => $trainer): ?>
+          <button type="button" class="trainer-card" onclick="trOpenModal(<?= (int) $i ?>)">
             <div class="trainer-card__avatar"><?= e(mb_substr($trainer['name'], 0, 1)) ?></div>
             <div class="trainer-card__name"><?= e($trainer['name']) ?></div>
-            <?php if ($trainer['bio']): ?><div class="trainer-card__bio"><?= e($trainer['bio']) ?></div><?php endif; ?>
-          </div>
+          </button>
         <?php endforeach; ?>
       </div>
     </div>
@@ -221,8 +231,49 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
   </div>
 </div>
 
+<div class="lm-modal-bg" id="tr-modal" role="dialog" aria-modal="true" aria-labelledby="tr-modal-title">
+  <div class="lm-modal">
+    <div class="lm-modal__head">
+      <div class="lm-modal__title" id="tr-modal-title">Trainer</div>
+      <button type="button" class="lm-modal__close" onclick="trCloseModal()" aria-label="Schließen">✕</button>
+    </div>
+    <div class="tr-modal__body">
+      <div class="trainer-card__avatar tr-modal__avatar" id="tr-modal-avatar"></div>
+      <div class="tr-modal__name" id="tr-modal-name"></div>
+      <p class="tr-modal__bio" id="tr-modal-bio"></p>
+    </div>
+  </div>
+</div>
+
 <script>
 var lmKurse = <?= json_encode(array_column($bookable, null, 'slug'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+var lmTrainers = <?= json_encode(array_map(function (array $t): array {
+    return [
+        'name' => $t['name'],
+        'initial' => mb_substr($t['name'], 0, 1),
+        'bio' => $t['bio'] !== '' ? $t['bio'] : 'Bio-Text folgt in Kürze.',
+    ];
+}, $trainers), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+
+function trOpenModal(i) {
+  var t = lmTrainers[i];
+  if (!t) return;
+  document.getElementById('tr-modal-title').textContent = t.name;
+  document.getElementById('tr-modal-avatar').textContent = t.initial;
+  document.getElementById('tr-modal-name').textContent = t.name;
+  document.getElementById('tr-modal-bio').textContent = t.bio;
+  document.getElementById('tr-modal').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function trCloseModal() {
+  document.getElementById('tr-modal').classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('tr-modal').addEventListener('click', function (e) {
+  if (e.target === this) trCloseModal();
+});
 var lmBaseUrl = 'https://tanzcenter-payer.nimbuscloud.at/index.php?c=PublicCustomers&what=courses&level=';
 
 function lmOpenModal(slug) {
@@ -244,7 +295,7 @@ document.getElementById('lm-modal').addEventListener('click', function (e) {
   if (e.target === this) lmCloseModal();
 });
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') lmCloseModal();
+  if (e.key === 'Escape') { lmCloseModal(); trCloseModal(); }
 });
 
 // Mobile-Navigation
@@ -315,6 +366,7 @@ nextBtn.addEventListener('click', function () { goToSlide(activeIndex + 1); });
 
 document.addEventListener('keydown', function (e) {
   if (document.getElementById('lm-modal').classList.contains('is-open')) return;
+  if (document.getElementById('tr-modal').classList.contains('is-open')) return;
   if (e.key === 'ArrowRight') goToSlide(activeIndex + 1);
   if (e.key === 'ArrowLeft') goToSlide(activeIndex - 1);
 });
@@ -330,13 +382,14 @@ var slideObserver = new IntersectionObserver(function (entries) {
 slides.forEach(function (slide) { slideObserver.observe(slide); });
 setActiveIndex(0);
 
-// Anker-Links (Nav, CTA-Buttons) scrollen den horizontalen Slide-Container
+// Anker-Links (Nav, CTA-Buttons): auf dem Handy horizontal zum Slide,
+// auf dem Desktop (klassischer One-Pager) normal vertikal zur Sektion
 document.querySelectorAll('a[href^="#"]').forEach(function (link) {
   link.addEventListener('click', function (e) {
     var target = document.getElementById(link.getAttribute('href').slice(1));
     if (!target) return;
     e.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'start' });
   });
 });
 </script>

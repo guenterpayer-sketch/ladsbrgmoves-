@@ -24,11 +24,6 @@
 
 * { box-sizing: border-box; }
 
-html, body {
-  height: 100dvh;
-  overflow: hidden;
-}
-
 body {
   margin: 0;
   background: var(--bg);
@@ -36,6 +31,13 @@ body {
   font-family: var(--font);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Startseite: Story-Swipe-Layout (volle Bildschirmhöhe, horizontales Scrollen).
+   Andere Seiten (Impressum, Datenschutz) bleiben normale, scrollbare Dokumente. */
+body.stories-page {
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -55,6 +57,8 @@ button { font-family: inherit; }
 
 .site-header {
   flex: 0 0 auto;
+  position: sticky;
+  top: 0;
   z-index: 20;
   background: rgba(23, 11, 22, 0.92);
   backdrop-filter: blur(8px);
@@ -79,6 +83,7 @@ button { font-family: inherit; }
   border-radius: 10px;
   border: 1px solid var(--border);
   background: none;
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,6 +283,8 @@ main {
   gap: 6px;
 }
 
+.panel--intro .scroll-hint--desktop { display: none; }
+
 .panel--pitch { text-align: center; }
 .panel--pitch p {
   font-size: 16px;
@@ -412,10 +419,29 @@ main {
 
 .schedule-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 
-.schedule-entry { border-radius: 8px; padding: 10px 12px; border-left: 3px solid var(--text-dimmer); font-size: 13px; line-height: 1.5; }
+.schedule-entry {
+  display: block;
+  width: 100%;
+  appearance: none;
+  margin: 0;
+  border: none;
+  border-left: 3px solid var(--text-dimmer);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: default;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.schedule-entry--bookable { cursor: pointer; }
+
 .schedule-entry__time { font-weight: 700; display: block; }
 .schedule-entry__course { display: block; }
 .schedule-entry__meta { display: block; color: var(--text-dimmer); font-size: 11.5px; }
+.schedule-entry__cta { display: inline-block; margin-top: 6px; font-size: 11.5px; font-weight: 700; }
 
 .schedule-entry--kinder { border-color: var(--cat-kinder); background: var(--cat-kinder-bg); color: #90c8f0; }
 .schedule-entry--jugendliche { border-color: var(--cat-jugendliche); background: var(--cat-jugendliche-bg); color: #f09090; }
@@ -429,6 +455,13 @@ main {
 .trainer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 
 .trainer-card {
+  display: block;
+  width: 100%;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -451,7 +484,11 @@ main {
 }
 
 .trainer-card__name { font-weight: 700; font-size: 14px; }
-.trainer-card__bio { color: var(--text-dim); font-size: 12px; margin-top: 4px; line-height: 1.4; }
+
+.tr-modal__body { padding: 24px 20px 28px; text-align: center; }
+.tr-modal__avatar { width: 72px; height: 72px; font-size: 26px; }
+.tr-modal__name { font-weight: 700; font-size: 17px; margin-top: 4px; }
+.tr-modal__bio { margin: 14px 0 0; color: var(--text-dim); font-size: 13.5px; line-height: 1.6; text-align: left; }
 
 /* ---------- Closing CTA ---------- */
 
@@ -541,3 +578,53 @@ main {
 
 .lm-modal__body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .lm-modal__body iframe { width: 100%; min-height: 500px; border: none; display: block; }
+
+/* ---------- Desktop: klassischer One-Pager statt Story-Swipe ---------- */
+
+@media (min-width: 881px) {
+  body.stories-page {
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
+  .story-progress,
+  .story-nav-btn {
+    display: none;
+  }
+
+  main {
+    display: block;
+  }
+
+  .stories-wrap {
+    position: static;
+    display: block;
+  }
+
+  .stories {
+    display: block;
+    overflow: visible;
+    scroll-snap-type: none;
+    height: auto;
+  }
+
+  .panel {
+    flex: initial;
+    width: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+    padding: 96px 32px;
+  }
+
+  .panel--intro {
+    height: auto;
+    min-height: 90vh;
+  }
+
+  .panel--intro .scroll-hint--mobile { display: none; }
+  .panel--intro .scroll-hint--desktop { display: flex; }
+}
