@@ -48,6 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
             $stmt = $db->prepare('DELETE FROM trainers WHERE id = :id');
             $stmt->execute(['id' => (int) $_POST['id']]);
             $message = 'Trainer gelöscht.';
+        } elseif ($action === 'delete_photo') {
+            $id = (int) $_POST['id'];
+            $stmt = $db->prepare('SELECT photo_path FROM trainers WHERE id = :id');
+            $stmt->execute(['id' => $id]);
+            $existing = $stmt->fetchColumn();
+            if ($existing) {
+                $fsPath = __DIR__ . '/../' . $existing;
+                if (is_file($fsPath)) {
+                    unlink($fsPath);
+                }
+            }
+            $stmt = $db->prepare('UPDATE trainers SET photo_path = :empty WHERE id = :id');
+            $stmt->execute(['empty' => '', 'id' => $id]);
+            $message = 'Bild gelöscht.';
         } elseif ($action === 'create' || $action === 'update') {
             $data = [
                 'name'       => trim((string) $_POST['name']),
@@ -116,8 +130,15 @@ include __DIR__ . '/includes/layout_top.php';
   <label>Foto (PNG/JPG/WebP, max. 5 MB)
     <input type="file" name="photo" accept="image/png,image/jpeg,image/webp">
   </label>
+  <p class="form-hint">Optimal: quadratisch, mindestens 400×400 Pixel. Das Foto wird nur klein (120×120 Pixel) und rund zugeschnitten angezeigt.</p>
   <?php if (!empty($editing['photo_path'])): ?>
     <img src="../<?= e($editing['photo_path']) ?>" alt="" class="admin-thumb">
+    <form method="post" onsubmit="return confirm('Bild wirklich löschen?');">
+      <input type="hidden" name="csrf_token" value="<?= e($token) ?>">
+      <input type="hidden" name="action" value="delete_photo">
+      <input type="hidden" name="id" value="<?= (int) $editing['id'] ?>">
+      <button type="submit" class="button-danger">Bild löschen</button>
+    </form>
   <?php endif; ?>
   <label>Reihenfolge (Zahl, kleiner = weiter oben)
     <input type="number" name="sort_order" value="<?= (int) ($editing['sort_order'] ?? 0) ?>">
