@@ -15,6 +15,7 @@
     <div class="admin-nav__brand">LNDSBRG MOVES<span>Redaktion</span></div>
     <a href="dashboard.php">Übersicht</a>
     <a href="texts.php">Texte</a>
+    <a href="legal.php">Impressum &amp; Datenschutz</a>
     <a href="courses.php">Kurse</a>
     <a href="schedule.php">Stundenplan</a>
     <a href="trainers.php">Trainer</a>

@@ -146,6 +146,9 @@ button[type=submit] { background: var(--accent); color: #fff; }
 .form-error { color: #d61f4c; font-weight: 600; }
 .form-hint { margin: -8px 0 8px; font-size: 0.85rem; color: #6b7280; }
 .textarea-html { font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.85rem; line-height: 1.5; }
+.admin-preview-link { font-size: 0.8rem; font-weight: 400; margin-left: 8px; }
+.stacked-form h2 { margin: 24px 0 8px; font-size: 1.1rem; }
+.stacked-form h2:first-child { margin-top: 0; }
 
 .login-body {
   display: flex;
