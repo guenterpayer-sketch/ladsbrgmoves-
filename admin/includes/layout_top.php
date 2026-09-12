@@ -18,6 +18,7 @@
     <a href="courses.php">Kurse</a>
     <a href="schedule.php">Stundenplan</a>
     <a href="trainers.php">Trainer</a>
+    <a href="pricing.php">Preise</a>
     <a href="users.php">Nutzer</a>
     <a href="../index.php" target="_blank">Seite ansehen ↗</a>
     <a href="logout.php" class="admin-nav__logout">Abmelden</a>

@@ -195,59 +195,20 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
   <section class="panel" id="preise">
     <div class="panel__inner">
       <h2 class="panel__title">Unsere <span class="grad-text">Preise</span></h2>
-
-      <h3 class="price-group-title">Erwachsene Paartanz</h3>
-      <p class="price-group-tagline">Ein Preis – alles dabei!</p>
-      <p class="panel__intro-text">Deine / Eure erste Stunde ist bei uns immer eine unverbindliche Schnupperstunde. Für unsere Planung benötigen wir aber immer eine vorherige Anmeldung zu dem entsprechenden Unterricht.</p>
+      <p class="panel__intro-text"><?= e(get_content('pricing_intro')) ?></p>
 
       <div class="price-grid">
-        <div class="price-card">
-          <div class="price-card__name">Schnuppermonat</div>
-          <div class="price-card__price">115&nbsp;€ <span class="price-card__unit">einmalig, pro Person</span></div>
-          <div class="price-card__note">Endet automatisch nach 4 Wochen</div>
-        </div>
-        <div class="price-card">
-          <div class="price-card__name">3 Monate</div>
-          <div class="price-card__price">79&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
-          <div class="price-card__note">Danach jederzeit kündbar, 2 Wochen zum Monatsende</div>
-        </div>
-        <div class="price-card">
-          <div class="price-card__name">6 Monate</div>
-          <div class="price-card__price">69&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
-          <div class="price-card__note">Danach jederzeit kündbar, 2 Wochen zum Monatsende</div>
-        </div>
+        <?php foreach (get_pricing_plans() as $plan): ?>
+          <div class="price-card">
+            <div class="price-card__name"><?= e($plan['name']) ?></div>
+            <?php if ($plan['tagline'] !== ''): ?><div class="price-card__tagline"><?= e($plan['tagline']) ?></div><?php endif; ?>
+            <div class="price-card__price"><?= number_format((float) $plan['price'], 0) ?>&nbsp;€ <span class="price-card__unit"><?= e($plan['price_unit']) ?></span></div>
+            <?php if ($plan['included_text'] !== ''): ?><div class="price-card__list"><?= e($plan['included_text']) ?></div><?php endif; ?>
+          </div>
+        <?php endforeach; ?>
       </div>
 
-      <p class="price-footnote">Ihr bleibt, weil's Spaß macht. Wechselt ihr nach dem Schnuppermonat in ein Abo, wird der bereits gezahlte Betrag verrechnet. Nach der Grundlaufzeit könnt ihr monatlich kündigen, mit einer Frist von 14 Tagen zum Monatsende.</p>
-      <p class="price-footnote">Enthalten sind alle Unterrichte, ausgenommen besondere Technikstunden und Unterrichte von Gastlehrern.</p>
-
-      <h3 class="price-group-title">Solotanz, Jugendliche, Kinder</h3>
-      <p class="price-group-tagline">Ein Preis – alles allein dabei!</p>
-      <p class="panel__intro-text">Deine / Eure erste Stunde ist unverbindlich: Gefällt sie euch nicht, entstehen keine Kosten. Für unsere Planung benötigen wir aber immer eine vorherige Anmeldung zu dem entsprechenden Unterricht.</p>
-
-      <div class="price-grid">
-        <div class="price-card">
-          <div class="price-card__name">Solo Erwachsene</div>
-          <div class="price-card__tagline">Geselligkeit und Fitness!</div>
-          <div class="price-card__price">59&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
-          <div class="price-card__list">ZUMBA®, ZUMBA Gold®, Line Dance, Streetdance, Hip Hop, K-Pop, Contemporary</div>
-        </div>
-        <div class="price-card">
-          <div class="price-card__name">Jugendliche</div>
-          <div class="price-card__tagline">Tanzspaß ohne Ende!</div>
-          <div class="price-card__price">52&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
-          <div class="price-card__list">Alle Paartanzunterrichte (Jugendliche &amp; Szenetänze), Hip Hop, K-Pop, Breakdance, ZUMBA®, Line Dance</div>
-        </div>
-        <div class="price-card">
-          <div class="price-card__name">Kinder</div>
-          <div class="price-card__tagline">Spiel, Spaß und Tanz</div>
-          <div class="price-card__price">52&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
-          <div class="price-card__list">Kindertanzen Vorschule, Kindertanzen 1./2. Klasse, Hip Hop 3./4. Klasse, DanceKids 3./4. Klasse, Hip Hop 5./6. Klasse, K-Pop 5./6. Klasse</div>
-        </div>
-      </div>
-
-      <p class="price-footnote">Der Vertrag läuft auf unbestimmte Zeit und kann jederzeit mit einer Frist von zwei Wochen zum Monatsende gekündigt werden. Kündigungen bedürfen der Textform.</p>
-      <p class="price-footnote price-footnote--muted">Die Preise für Szenetanzkurse, Workshops und Hochzeitskurse findet ihr direkt bei den jeweiligen Angeboten.</p>
+      <p class="price-footnote"><?= e(get_content('pricing_footnote')) ?></p>
     </div>
   </section>
 

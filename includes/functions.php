@@ -73,6 +73,11 @@ function get_trainers(): array {
     return get_db()->query('SELECT * FROM trainers ORDER BY sort_order, name')->fetchAll();
 }
 
+/** @return array<int,array<string,mixed>> */
+function get_pricing_plans(): array {
+    return get_db()->query('SELECT * FROM pricing_plans ORDER BY sort_order, name')->fetchAll();
+}
+
 /** @return array<int,array<string,string>> Kurse mit NimbusCloud-Anbindung, für das Buchungs-Modal */
 function get_bookable_courses(): array {
     $rows = get_db()->query(
