@@ -26,7 +26,10 @@ include __DIR__ . '/includes/layout_top.php';
   <?php foreach ($rows as $row): ?>
     <label>
       <?= e($row['label']) ?>
-      <?php if (strlen($row['content_value']) > 80): ?>
+      <?php if (strlen($row['content_value']) > 300): ?>
+        <textarea name="<?= e($row['content_key']) ?>" rows="20" class="textarea-html"><?= e($row['content_value']) ?></textarea>
+        <p class="form-hint">Dieses Feld enthält HTML (Überschriften &lt;h2&gt;, Absätze &lt;p&gt;). Bitte beim Bearbeiten die Tags nicht entfernen, sonst geht die Formatierung verloren.</p>
+      <?php elseif (strlen($row['content_value']) > 80): ?>
         <textarea name="<?= e($row['content_key']) ?>" rows="3"><?= e($row['content_value']) ?></textarea>
       <?php else: ?>
         <input type="text" name="<?= e($row['content_key']) ?>" value="<?= e($row['content_value']) ?>">

@@ -145,6 +145,7 @@ button[type=submit] { background: var(--accent); color: #fff; }
 .form-success { color: #157a3c; font-weight: 600; }
 .form-error { color: #d61f4c; font-weight: 600; }
 .form-hint { margin: -8px 0 8px; font-size: 0.85rem; color: #6b7280; }
+.textarea-html { font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.85rem; line-height: 1.5; }
 
 .login-body {
   display: flex;

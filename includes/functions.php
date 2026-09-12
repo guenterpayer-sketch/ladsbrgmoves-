@@ -33,6 +33,21 @@ function set_content(string $key, string $value): void {
     $stmt->execute(['value' => $value, 'key' => $key]);
 }
 
+/**
+ * Liefert einen frei editierbaren HTML-Textblock (z.B. Impressum/Datenschutz)
+ * und ersetzt darin {{contact_*}}-Platzhalter durch die zentral gepflegten
+ * Kontaktdaten. Bewusst ungefiltertes HTML, da nur der eingeloggte Admin
+ * (Redaktionssystem) diese Inhalte schreiben kann.
+ */
+function render_legal_body(string $contentKey): string {
+    $body = get_content($contentKey);
+    return str_replace(
+        ['{{contact_name}}', '{{contact_address}}', '{{contact_phone}}', '{{contact_email}}'],
+        [get_content('contact_name'), get_content('contact_address'), get_content('contact_phone'), get_content('contact_email')],
+        $body
+    );
+}
+
 /** @return array<string,array<int,array<string,mixed>>> Kurse gruppiert nach Kategorie */
 function get_courses_grouped(): array {
     $rows = get_db()->query(
