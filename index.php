@@ -30,7 +30,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
 <header class="site-header">
   <nav class="site-nav">
     <a href="#top" class="logo">
-      <img class="logo__img" src="assets/img/logo-icon.png" alt="<?= e($brandName) ?>">
+      <img class="logo__img" src="assets/img/logo-lockup.png" alt="<?= e($brandName) ?>">
     </a>
     <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menü öffnen">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
@@ -40,6 +40,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
     <a href="#kurse">Kurse</a>
     <a href="#plan">Stundenplan</a>
     <a href="#trainer">Trainer</a>
+    <a href="#preise">Preise</a>
     <a href="impressum.php">Impressum</a>
     <a href="datenschutz.php">Datenschutz</a>
   </div>
@@ -62,6 +63,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
   <!-- Slide 1: Intro -->
   <section class="panel panel--intro" id="top">
     <div class="glow" aria-hidden="true"></div>
+    <img class="hero-logo" src="assets/img/logo-lockup.png" alt="<?= e($brandName) ?>">
     <p class="badge"><?= e(get_content('hero_kicker')) ?></p>
     <h1>
       <span><?= e(get_content('hero_title_line1')) ?></span><br>
@@ -189,7 +191,67 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
     </div>
   </section>
 
-  <!-- Slide 6: Closing CTA + Footer -->
+  <!-- Slide 6: Preise -->
+  <section class="panel" id="preise">
+    <div class="panel__inner">
+      <h2 class="panel__title">Unsere <span class="grad-text">Preise</span></h2>
+
+      <h3 class="price-group-title">Erwachsene Paartanz</h3>
+      <p class="price-group-tagline">Ein Preis – alles dabei!</p>
+      <p class="panel__intro-text">Deine / Eure erste Stunde ist bei uns immer eine unverbindliche Schnupperstunde. Für unsere Planung benötigen wir aber immer eine vorherige Anmeldung zu dem entsprechenden Unterricht.</p>
+
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="price-card__name">Schnuppermonat</div>
+          <div class="price-card__price">115&nbsp;€ <span class="price-card__unit">einmalig, pro Person</span></div>
+          <div class="price-card__note">Endet automatisch nach 4 Wochen</div>
+        </div>
+        <div class="price-card">
+          <div class="price-card__name">3 Monate</div>
+          <div class="price-card__price">79&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
+          <div class="price-card__note">Danach jederzeit kündbar, 2 Wochen zum Monatsende</div>
+        </div>
+        <div class="price-card">
+          <div class="price-card__name">6 Monate</div>
+          <div class="price-card__price">69&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
+          <div class="price-card__note">Danach jederzeit kündbar, 2 Wochen zum Monatsende</div>
+        </div>
+      </div>
+
+      <p class="price-footnote">Ihr bleibt, weil's Spaß macht. Wechselt ihr nach dem Schnuppermonat in ein Abo, wird der bereits gezahlte Betrag verrechnet. Nach der Grundlaufzeit könnt ihr monatlich kündigen, mit einer Frist von 14 Tagen zum Monatsende.</p>
+      <p class="price-footnote">Enthalten sind alle Unterrichte, ausgenommen besondere Technikstunden und Unterrichte von Gastlehrern.</p>
+
+      <h3 class="price-group-title">Solotanz, Jugendliche, Kinder</h3>
+      <p class="price-group-tagline">Ein Preis – alles allein dabei!</p>
+      <p class="panel__intro-text">Deine / Eure erste Stunde ist unverbindlich: Gefällt sie euch nicht, entstehen keine Kosten. Für unsere Planung benötigen wir aber immer eine vorherige Anmeldung zu dem entsprechenden Unterricht.</p>
+
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="price-card__name">Solo Erwachsene</div>
+          <div class="price-card__tagline">Geselligkeit und Fitness!</div>
+          <div class="price-card__price">59&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
+          <div class="price-card__list">ZUMBA®, ZUMBA Gold®, Line Dance, Streetdance, Hip Hop, K-Pop, Contemporary</div>
+        </div>
+        <div class="price-card">
+          <div class="price-card__name">Jugendliche</div>
+          <div class="price-card__tagline">Tanzspaß ohne Ende!</div>
+          <div class="price-card__price">52&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
+          <div class="price-card__list">Alle Paartanzunterrichte (Jugendliche &amp; Szenetänze), Hip Hop, K-Pop, Breakdance, ZUMBA®, Line Dance</div>
+        </div>
+        <div class="price-card">
+          <div class="price-card__name">Kinder</div>
+          <div class="price-card__tagline">Spiel, Spaß und Tanz</div>
+          <div class="price-card__price">52&nbsp;€ <span class="price-card__unit">/ Monat, pro Person</span></div>
+          <div class="price-card__list">Kindertanzen Vorschule, Kindertanzen 1./2. Klasse, Hip Hop 3./4. Klasse, DanceKids 3./4. Klasse, Hip Hop 5./6. Klasse, K-Pop 5./6. Klasse</div>
+        </div>
+      </div>
+
+      <p class="price-footnote">Der Vertrag läuft auf unbestimmte Zeit und kann jederzeit mit einer Frist von zwei Wochen zum Monatsende gekündigt werden. Kündigungen bedürfen der Textform.</p>
+      <p class="price-footnote price-footnote--muted">Die Preise für Szenetanzkurse, Workshops und Hochzeitskurse findet ihr direkt bei den jeweiligen Angeboten.</p>
+    </div>
+  </section>
+
+  <!-- Slide 7: Closing CTA + Footer -->
   <section class="panel panel--closing">
     <div class="panel__inner">
       <h2 class="panel__title">Bereit?</h2>
@@ -238,6 +300,7 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
       <button type="button" class="lm-modal__close" onclick="trCloseModal()" aria-label="Schließen">✕</button>
     </div>
     <div class="tr-modal__body">
+      <img class="tr-modal__photo" id="tr-modal-photo" alt="" hidden>
       <div class="trainer-card__avatar tr-modal__avatar" id="tr-modal-avatar"></div>
       <div class="tr-modal__name" id="tr-modal-name"></div>
       <p class="tr-modal__bio" id="tr-modal-bio"></p>
@@ -252,6 +315,7 @@ var lmTrainers = <?= json_encode(array_map(function (array $t): array {
         'name' => $t['name'],
         'initial' => mb_substr($t['name'], 0, 1),
         'bio' => $t['bio'] !== '' ? $t['bio'] : 'Bio-Text folgt in Kürze.',
+        'photo' => $t['photo_path'] !== '' ? $t['photo_path'] : null,
     ];
 }, $trainers), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
@@ -259,9 +323,21 @@ function trOpenModal(i) {
   var t = lmTrainers[i];
   if (!t) return;
   document.getElementById('tr-modal-title').textContent = t.name;
-  document.getElementById('tr-modal-avatar').textContent = t.initial;
   document.getElementById('tr-modal-name').textContent = t.name;
   document.getElementById('tr-modal-bio').textContent = t.bio;
+  var photoEl = document.getElementById('tr-modal-photo');
+  var avatarEl = document.getElementById('tr-modal-avatar');
+  if (t.photo) {
+    photoEl.src = t.photo;
+    photoEl.alt = t.name;
+    photoEl.hidden = false;
+    avatarEl.hidden = true;
+  } else {
+    photoEl.hidden = true;
+    photoEl.src = '';
+    avatarEl.hidden = false;
+    avatarEl.textContent = t.initial;
+  }
   document.getElementById('tr-modal').classList.add('is-open');
   document.body.style.overflow = 'hidden';
 }
