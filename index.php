@@ -311,7 +311,7 @@ function trCloseModal() {
 document.getElementById('tr-modal').addEventListener('click', function (e) {
   if (e.target === this) trCloseModal();
 });
-var lmBaseUrl = 'https://tanzcenter-payer.nimbuscloud.at/index.php?c=PublicCustomers&what=courses&level=';
+var lmBaseUrl = 'https://tanzcenter-payer.nimbuscloud.at/index.php?c=PublicCustomers&site=99&what=courses&level=';
 
 function lmOpenModal(slug) {
   var kurs = lmKurse[slug];
