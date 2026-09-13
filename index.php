@@ -11,6 +11,59 @@ $brandName = get_content('brand_name', 'LNDSBRG MOVES');
 
 $categoryLabels = ['Kinder' => 'Kinder', 'Jugendliche' => 'Jugendliche', 'Erwachsene' => 'Erwachsene'];
 $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do' => 'Donnerstag', 'Fr' => 'Freitag', 'Sa' => 'Samstag', 'So' => 'Sonntag'];
+
+// SEO: Basis-URL, Meta-Beschreibung und strukturierte Daten (Schema.org DanceSchool),
+// damit die Seite bei Google für Suchen wie "Hip Hop", "K-Pop" oder "Urban Dance"
+// (jeweils mit Ortsbezug) korrekt eingeordnet werden kann.
+$siteUrl = 'https://lndsbrgmoves.de/';
+$metaDescription = get_content('hero_text');
+$ogImage = $siteUrl . 'assets/img/logo-lockup.png';
+
+// "Max-Planck-Str. 2, 86899 Landsberg am Lech" -> Straße / PLZ / Ort für die
+// PostalAddress im JSON-LD. Fällt bei unerwartetem Format auf die Rohadresse zurück,
+// statt einen Fehler zu werfen (Adresse kommt aus dem Admin-Textfeld "Kontakt").
+$rawAddress = get_content('contact_address');
+$street = $rawAddress;
+$postalCode = '';
+$locality = '';
+$addressParts = array_map('trim', explode(',', $rawAddress, 2));
+if (count($addressParts) === 2) {
+    $street = $addressParts[0];
+    if (preg_match('/^(\d{4,5})\s+(.+)$/', $addressParts[1], $m)) {
+        $postalCode = $m[1];
+        $locality = $m[2];
+    } else {
+        $locality = $addressParts[1];
+    }
+}
+
+$structuredData = [
+    '@context' => 'https://schema.org',
+    '@type' => 'DanceSchool',
+    'name' => $brandName,
+    'alternateName' => get_content('contact_name'),
+    'url' => $siteUrl,
+    'logo' => $ogImage,
+    'image' => $ogImage,
+    'description' => $metaDescription,
+    'telephone' => get_content('contact_phone'),
+    'email' => get_content('contact_email'),
+    'address' => array_filter([
+        '@type' => 'PostalAddress',
+        'streetAddress' => $street,
+        'postalCode' => $postalCode,
+        'addressLocality' => $locality,
+        'addressCountry' => 'DE',
+    ]),
+    'areaServed' => $locality !== '' ? $locality : 'Landsberg am Lech',
+    'makesOffer' => array_map(
+        fn(array $course) => [
+            '@type' => 'Offer',
+            'itemOffered' => ['@type' => 'Course', 'name' => $course['name']],
+        ],
+        array_merge(...array_values($courses))
+    ),
+];
 ?>
 <!doctype html>
 <html lang="de">
@@ -18,8 +71,25 @@ $weekdayLabels = ['Mo' => 'Montag', 'Di' => 'Dienstag', 'Mi' => 'Mittwoch', 'Do'
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e(get_content('site_title', $brandName)) ?></title>
-<meta name="description" content="<?= e(get_content('hero_text')) ?>">
+<meta name="description" content="<?= e($metaDescription) ?>">
+<link rel="canonical" href="<?= e($siteUrl) ?>">
 <link rel="icon" href="assets/img/logo-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="<?= e($brandName) ?>">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="<?= e($siteUrl) ?>">
+<meta property="og:title" content="<?= e(get_content('site_title', $brandName)) ?>">
+<meta property="og:description" content="<?= e($metaDescription) ?>">
+<meta property="og:image" content="<?= e($ogImage) ?>">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= e(get_content('site_title', $brandName)) ?>">
+<meta name="twitter:description" content="<?= e($metaDescription) ?>">
+<meta name="twitter:image" content="<?= e($ogImage) ?>">
+
+<script type="application/ld+json"><?= json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">

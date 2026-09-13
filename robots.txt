@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /sql/
+Disallow: /config.php
+
+Sitemap: https://lndsbrgmoves.de/sitemap.xml

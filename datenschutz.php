@@ -9,6 +9,7 @@ $brandName = get_content('brand_name', 'LNDSBRG MOVES');
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Datenschutz · <?= e($brandName) ?></title>
+<link rel="canonical" href="https://lndsbrgmoves.de/datenschutz.php">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/legal.css">
