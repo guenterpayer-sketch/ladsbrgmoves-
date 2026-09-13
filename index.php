@@ -72,6 +72,7 @@ $structuredData = [
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e(get_content('site_title', $brandName)) ?></title>
 <meta name="description" content="<?= e($metaDescription) ?>">
+<meta name="google-site-verification" content="Nj0czs3tRqS34fKODCF4_v1eHcL2y9oqAaG2jgqhUhM">
 <link rel="canonical" href="<?= e($siteUrl) ?>">
 <link rel="icon" href="assets/img/logo-icon.png">
 
