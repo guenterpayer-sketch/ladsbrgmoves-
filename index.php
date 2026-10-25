@@ -550,14 +550,26 @@ setActiveIndex(0);
 
 // Anker-Links (Nav, CTA-Buttons): auf dem Handy horizontal zum Slide,
 // auf dem Desktop (klassischer One-Pager) normal vertikal zur Sektion
+var desktopLayout = window.matchMedia('(min-width: 881px)');
 document.querySelectorAll('a[href^="#"]').forEach(function (link) {
   link.addEventListener('click', function (e) {
     var target = document.getElementById(link.getAttribute('href').slice(1));
     if (!target) return;
     e.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'start' });
+    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: desktopLayout.matches ? 'start' : 'nearest' });
   });
 });
+
+// Handy-Layout: Die Seite selbst darf nie vertikal scrollen. Manche Browser (v.a. Firefox
+// am Handy) verschieben sie bei Anker-Sprüngen trotz overflow:hidden; dann verdeckt die
+// feste Kopfleiste den Anfang des Slides und der Fortschrittsbalken verschwindet.
+function resetPageScroll() {
+  if (desktopLayout.matches) return;
+  if (window.scrollY !== 0) window.scrollTo({ top: 0, behavior: 'instant' });
+}
+window.addEventListener('scroll', resetPageScroll, { passive: true });
+window.addEventListener('load', resetPageScroll);
+resetPageScroll();
 </script>
 
 </body>
