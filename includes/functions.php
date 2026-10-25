@@ -88,6 +88,27 @@ function get_trainers(): array {
     return get_db()->query('SELECT * FROM trainers ORDER BY sort_order, name')->fetchAll();
 }
 
+function workshop_today(): string {
+    return (new DateTimeImmutable('today', new DateTimeZone('Europe/Berlin')))->format('Y-m-d');
+}
+
+/** @return array<int,array<string,mixed>> Workshops ab heute, nächster Termin zuerst */
+function get_upcoming_workshops(): array {
+    $stmt = get_db()->prepare('SELECT * FROM workshops WHERE event_date >= :today ORDER BY event_date, id');
+    $stmt->execute(['today' => workshop_today()]);
+    return $stmt->fetchAll();
+}
+
+/** "2026-11-14" -> "Sa 14.11.2026" */
+function format_workshop_date(string $ymd): string {
+    $date = DateTimeImmutable::createFromFormat('Y-m-d', $ymd);
+    if ($date === false) {
+        return $ymd;
+    }
+    $weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+    return $weekdays[(int) $date->format('w')] . ' ' . $date->format('d.m.Y');
+}
+
 /** @return array<int,array<string,mixed>> */
 function get_pricing_plans(): array {
     return get_db()->query('SELECT * FROM pricing_plans ORDER BY sort_order, name')->fetchAll();

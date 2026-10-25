@@ -6,6 +6,19 @@ $courses = get_courses_grouped();
 $schedule = get_schedule_grouped();
 $trainers = get_trainers();
 $bookable = get_bookable_courses();
+$workshops = get_upcoming_workshops();
+
+// Anmelde-Popup: Kurse und Workshops teilen sich dasselbe NimbusCloud-Modal
+$lmKurse = array_column($bookable, null, 'slug');
+foreach ($workshops as $workshop) {
+    if ($workshop['nimbus_online_id'] !== '') {
+        $lmKurse['ws-' . $workshop['id']] = [
+            'slug' => 'ws-' . $workshop['id'],
+            'name' => $workshop['title'],
+            'nimbus_online_id' => $workshop['nimbus_online_id'],
+        ];
+    }
+}
 
 $brandName = get_content('brand_name', 'LNDSBRG MOVES');
 
@@ -90,6 +103,20 @@ $structuredData = [
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 
 <script type="application/ld+json"><?= json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+<?php if ($workshops): ?>
+<script type="application/ld+json"><?= json_encode(array_map(fn(array $workshop) => array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'Event',
+    'name' => $workshop['title'],
+    'startDate' => $workshop['event_date'],
+    'description' => $workshop['description'],
+    'eventStatus' => 'https://schema.org/EventScheduled',
+    'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+    'location' => ['@type' => 'Place', 'name' => $brandName, 'address' => $structuredData['address']],
+    'organizer' => ['@type' => 'Organization', 'name' => $brandName, 'url' => $siteUrl],
+    'url' => $siteUrl . '#workshops',
+]), $workshops), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+<?php endif; ?>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,6 +137,7 @@ $structuredData = [
   <div class="nav-links" id="nav-links">
     <a href="#kurse">Kurse</a>
     <a href="#plan">Stundenplan</a>
+    <?php if ($workshops): ?><a href="#workshops">Workshops</a><?php endif; ?>
     <a href="#trainer">Trainer</a>
     <a href="#preise">Preise</a>
     <a href="impressum.php">Impressum</a>
@@ -246,6 +274,36 @@ $structuredData = [
     </div>
   </section>
 
+  <?php if ($workshops): ?>
+  <!-- Workshops (nur sichtbar, solange kommende Workshops existieren) -->
+  <section class="panel" id="workshops">
+    <div class="panel__inner">
+      <h2 class="panel__title">Unsere <span class="grad-text">Workshops</span></h2>
+      <p class="panel__intro-text">Einmalige Specials – klick auf einen Workshop, um dich anzumelden.</p>
+      <div class="course-grid">
+        <?php foreach ($workshops as $workshop): ?>
+          <?php $workshopBookable = $workshop['nimbus_online_id'] !== ''; ?>
+          <?php $workshopMeta = array_filter([
+              $workshop['time_info'],
+              $workshop['trainer'] !== '' ? 'mit ' . $workshop['trainer'] : '',
+              $workshop['price'],
+          ], fn($part) => $part !== ''); ?>
+          <?php $workshopBody = '<div class="workshop-card__date">' . e(format_workshop_date($workshop['event_date'])) . '</div>'
+              . '<div class="course-card__name">' . e($workshop['title']) . '</div>'
+              . ($workshopMeta ? '<div class="course-card__meta">' . e(implode(' · ', $workshopMeta)) . '</div>' : '')
+              . ($workshop['description'] !== '' ? '<div class="course-card__meta workshop-card__desc">' . nl2br(e($workshop['description'])) . '</div>' : '')
+              . ($workshopBookable ? '<span class="course-card__cta">Jetzt anmelden →</span>' : ''); ?>
+          <?php if ($workshopBookable): ?>
+            <button type="button" class="course-card course-card--bookable" onclick="lmOpenModal('ws-<?= (int) $workshop['id'] ?>')"><?= $workshopBody ?></button>
+          <?php else: ?>
+            <div class="course-card"><?= $workshopBody ?></div>
+          <?php endif; ?>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- Slide 5: Trainer (ohne Fotos) -->
   <section class="panel" id="trainer">
     <div class="panel__inner">
@@ -341,7 +399,7 @@ $structuredData = [
 </div>
 
 <script>
-var lmKurse = <?= json_encode(array_column($bookable, null, 'slug'), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+var lmKurse = <?= json_encode($lmKurse, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 var lmTrainers = <?= json_encode(array_map(function (array $t): array {
     return [
         'name' => $t['name'],

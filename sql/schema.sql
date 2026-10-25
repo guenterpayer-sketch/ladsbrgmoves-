@@ -59,6 +59,18 @@ CREATE TABLE IF NOT EXISTS trainers (
   sort_order INT NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS workshops (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  event_date DATE NOT NULL,
+  time_info VARCHAR(100) NOT NULL DEFAULT '',
+  trainer VARCHAR(100) NOT NULL DEFAULT '',
+  price VARCHAR(50) NOT NULL DEFAULT '',
+  description TEXT NOT NULL,
+  -- NimbusCloud-ID für die Anmeldung (wie bei Kursen); leer = Workshop ohne Buchungsbutton
+  nimbus_online_id VARCHAR(20) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS pricing_plans (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,

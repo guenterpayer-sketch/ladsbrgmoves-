@@ -19,6 +19,10 @@ include __DIR__ . '/includes/layout_top.php';
     <h2>Stundenplan</h2>
     <p>Wochenplan mit Uhrzeiten und Trainer-Zuordnung pflegen.</p>
   </a>
+  <a class="admin-card" href="workshops.php">
+    <h2>Workshops</h2>
+    <p>Einzelne Workshop-Termine mit Anmeldung pflegen; vergangene verschwinden automatisch.</p>
+  </a>
   <a class="admin-card" href="trainers.php">
     <h2>Trainer</h2>
     <p>Trainer-Profile inkl. Foto und Kurzbeschreibung pflegen.</p>

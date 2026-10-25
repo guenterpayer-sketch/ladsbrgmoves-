@@ -18,6 +18,7 @@
     <a href="legal.php">Impressum &amp; Datenschutz</a>
     <a href="courses.php">Kurse</a>
     <a href="schedule.php">Stundenplan</a>
+    <a href="workshops.php">Workshops</a>
     <a href="trainers.php">Trainer</a>
     <a href="pricing.php">Preise</a>
     <a href="users.php">Nutzer</a>
