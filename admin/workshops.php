@@ -84,7 +84,7 @@ include __DIR__ . '/includes/layout_top.php';
   <label>Preis (Freitext, z.B. "25 €")
     <input type="text" name="price" value="<?= e($editing['price'] ?? '') ?>">
   </label>
-  <label>Beschreibung
+  <label>Beschreibung (Zeilenumbrüche werden übernommen)
     <textarea name="description" rows="4"><?= e($editing['description'] ?? '') ?></textarea>
   </label>
   <label>NimbusCloud-ID für die Anmeldung (leer = ohne Anmelde-Button)

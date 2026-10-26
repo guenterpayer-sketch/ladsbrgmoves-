@@ -99,6 +99,25 @@ function get_upcoming_workshops(): array {
     return $stmt->fetchAll();
 }
 
+/**
+ * Typografie für frei eingegebene Workshop-Texte (HTML-escaped): Uhrzeitbereiche mit
+ * Gedankenstrich, und feste Leerzeichen vor "Uhr" und "€", damit Zahl und Einheit beim
+ * Zeilenumbruch nicht getrennt werden. Bindestriche anderer Zahlen bleiben unberührt
+ * (z.B. Telefonnummern).
+ */
+function format_workshop_text(string $text): string {
+    $nbsp = "\u{00A0}";
+    $time = '\d{1,2}[:.]\d{2}';
+    $text = preg_replace_callback(
+        '/(' . $time . ')(\s*)-(\s*)(' . $time . ')/u',
+        fn(array $m) => $m[1] . ($m[2] !== '' ? $nbsp : '') . '–' . ($m[3] !== '' ? $nbsp : '') . $m[4],
+        $text
+    );
+    $text = preg_replace('/(\d)\s+Uhr\b/u', '$1' . $nbsp . 'Uhr', $text);
+    $text = preg_replace('/(\d)\s*€/u', '$1' . $nbsp . '€', $text);
+    return e($text);
+}
+
 /** "2026-11-14" -> "Sa 14.11.2026" */
 function format_workshop_date(string $ymd): string {
     $date = DateTimeImmutable::createFromFormat('Y-m-d', $ymd);

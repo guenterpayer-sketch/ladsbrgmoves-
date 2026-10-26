@@ -283,20 +283,20 @@ $structuredData = [
       <div class="course-grid">
         <?php foreach ($workshops as $workshop): ?>
           <?php $workshopBookable = $workshop['nimbus_online_id'] !== ''; ?>
-          <?php $workshopMeta = array_filter([
-              $workshop['time_info'],
-              $workshop['trainer'] !== '' ? 'mit ' . $workshop['trainer'] : '',
-              $workshop['price'],
+          <?php $workshopWhen = array_filter([
+              format_workshop_text($workshop['time_info']),
+              $workshop['trainer'] !== '' ? 'mit ' . e($workshop['trainer']) : '',
           ], fn($part) => $part !== ''); ?>
           <?php $workshopBody = '<div class="workshop-card__date">' . e(format_workshop_date($workshop['event_date'])) . '</div>'
               . '<div class="course-card__name">' . e($workshop['title']) . '</div>'
-              . ($workshopMeta ? '<div class="course-card__meta">' . e(implode(' · ', $workshopMeta)) . '</div>' : '')
-              . ($workshop['description'] !== '' ? '<div class="course-card__meta workshop-card__desc">' . nl2br(e($workshop['description'])) . '</div>' : '')
+              . ($workshopWhen ? '<div class="course-card__meta">' . implode(' · ', $workshopWhen) . '</div>' : '')
+              . ($workshop['price'] !== '' ? '<div class="workshop-card__price">' . format_workshop_text($workshop['price']) . '</div>' : '')
+              . ($workshop['description'] !== '' ? '<div class="course-card__meta workshop-card__desc">' . nl2br(format_workshop_text($workshop['description'])) . '</div>' : '')
               . ($workshopBookable ? '<span class="course-card__cta">Jetzt anmelden →</span>' : ''); ?>
           <?php if ($workshopBookable): ?>
-            <button type="button" class="course-card course-card--bookable" onclick="lmOpenModal('ws-<?= (int) $workshop['id'] ?>')"><?= $workshopBody ?></button>
+            <button type="button" class="course-card workshop-card course-card--bookable" onclick="lmOpenModal('ws-<?= (int) $workshop['id'] ?>')"><?= $workshopBody ?></button>
           <?php else: ?>
-            <div class="course-card"><?= $workshopBody ?></div>
+            <div class="course-card workshop-card"><?= $workshopBody ?></div>
           <?php endif; ?>
         <?php endforeach; ?>
       </div>
